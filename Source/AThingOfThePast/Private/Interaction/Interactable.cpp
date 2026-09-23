@@ -5,7 +5,19 @@
 
 AInteractable::AInteractable()
 {
+	InteractionTriggerVolume = CreateDefaultSubobject<UCapsuleComponent>("Trigger Volume", false);
+	InteractionTriggerVolume->SetupAttachment(RootComponent);
 	
+	InteractionTriggerVolume->SetCapsuleHalfHeight(50.0f);
+	InteractionTriggerVolume->SetCapsuleRadius(25.0f);
+	
+	InteractionTriggerVolume->ShapeColor = FColor::Green;
+	InteractionTriggerVolume->SetLineThickness(1.0f);
+	
+	InteractionTriggerVolume->SetCollisionProfileName(FName("Interactable"));
+	
+	PromptLocation = CreateDefaultSubobject<USceneComponent>("Prompt Location");
+	PromptLocation->SetupAttachment(InteractionTriggerVolume);
 }
 
 void AInteractable::BeginPlay()

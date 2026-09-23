@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractableInterface.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.generated.h"
 
@@ -26,6 +27,12 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UCapsuleComponent> InteractionTriggerVolume;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<USceneComponent> PromptLocation;
 	
 public:
 	
