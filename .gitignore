@@ -80,3 +80,4 @@ Plugins/UE_SimpleDialogue/
 Plugins/UE_Items/
 Plugins/UE_Equipment/
 *.slnx
+/.idea
