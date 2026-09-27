@@ -33,12 +33,12 @@ bool AInteractable::CanInteract_Implementation(AActor* Player)
 
 bool AInteractable::AttemptInteract_Implementation(AActor* Player)
 {
-	if (!CanInteract_Implementation(Player))
+	if (!IInteractableInterface::Execute_CanInteract(this, Player))
 	{
 		return false;
 	}
 	
-	OnInteraction_Implementation(Player);
+	IInteractableInterface::Execute_OnInteraction(this, Player);
 	return true;
 }
 
