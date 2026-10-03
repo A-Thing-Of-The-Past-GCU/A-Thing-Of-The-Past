@@ -21,14 +21,15 @@ void UKeypadRequirement::BeginPlay_Implementation()
 			continue;
 		}
 	
-		if (const auto PrimitiveComponent = Cast<UPrimitiveComponent>(Component))
+		
+		
+		if (const auto ChildActorComponent = Cast<UChildActorComponent>(Component))
 		{
-			KeypadPointers.Add(PrimitiveComponent, Key);
-			LOG("GoodPrimitive %s : %s", *PrimitiveComponent->GetName(), *PrimitiveComponent->GetOwner()->GetName())
-			PrimitiveComponent->OnClicked.AddUniqueDynamic(
+			KeypadPointers.Add(ChildActorComponent->GetChildActor(), Key);
+			LOG("GoodPrimitive %s : %s", *ChildActorComponent->GetName(), *ChildActorComponent->GetOwner()->GetName())
+			ChildActorComponent->GetChildActor()->OnClicked.AddUniqueDynamic(
 				this,
-				&UKeypadRequirement::HandleClicked
-			);
+				&UKeypadRequirement::HandleClicked);
 		}
 	
 		LOG("Continue")
@@ -38,14 +39,14 @@ void UKeypadRequirement::BeginPlay_Implementation()
 	
 }
 
-void UKeypadRequirement::HandleClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void UKeypadRequirement::HandleClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
-	OnClicked(TouchedComponent, ButtonPressed);
+	OnClicked(TouchedActor, ButtonPressed);
 }
 
-void UKeypadRequirement::OnClicked_Implementation(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void UKeypadRequirement::OnClicked_Implementation(AActor* TouchedActor, FKey ButtonPressed)
 {
-	const auto found = KeypadPointers.Find(TouchedComponent);
+	const auto found = KeypadPointers.Find(TouchedActor);
 	if (!found)
 	{
 		LOG("BadPointer")

@@ -22,7 +22,7 @@ public:
 	TMap<int32, FComponentReference> KeypadReferences;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Config")
-	TMap<UPrimitiveComponent*, int32> KeypadPointers;
+	TMap<AActor*, int32> KeypadPointers;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Config")
 	TArray<int32> DesiredKeypadOutput;
@@ -32,10 +32,10 @@ protected:
 	virtual void BeginPlay_Implementation() override;
 	
 	UFUNCTION()
-	void HandleClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	void HandleClicked(AActor* TouchedActor , FKey ButtonPressed);
 	
 	UFUNCTION(BlueprintNativeEvent)
-	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	void OnClicked(AActor* TouchedActor , FKey ButtonPressed);
 	
 	UPROPERTY()
 	TArray<int32> CurrentKeypadOutput;
