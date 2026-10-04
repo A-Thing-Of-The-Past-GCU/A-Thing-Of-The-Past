@@ -1,9 +1,9 @@
 // Copyright GCU 2026. All rights reserved.
 
 
-#include "Interaction/Requirements/ComponentClickedRequirement.h"
+#include "Interaction/Requirements/ChildActorClickedRequirement.h"
 
-void UComponentClickedRequirement::BeginPlay_Implementation()
+void UChildActorClickedRequirement::BeginPlay_Implementation()
 {
 	Super::BeginPlay_Implementation();
 	
@@ -21,7 +21,7 @@ void UComponentClickedRequirement::BeginPlay_Implementation()
 		LOG("GoodPrimitive %s : %s", *PrimitiveComponent->GetName(), *PrimitiveComponent->GetOwner()->GetName())
 		PrimitiveComponent->OnClicked.AddUniqueDynamic(
 			this,
-			&UComponentClickedRequirement::HandleClicked
+			&UChildActorClickedRequirement::HandleClicked
 		);
 	}
 	
@@ -29,12 +29,12 @@ void UComponentClickedRequirement::BeginPlay_Implementation()
 	
 }
 
-void UComponentClickedRequirement::HandleClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void UChildActorClickedRequirement::HandleClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	OnClicked(TouchedComponent, ButtonPressed);
 }
 
-void UComponentClickedRequirement::OnClicked_Implementation(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void UChildActorClickedRequirement::OnClicked_Implementation(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	LOG("OnClickedCalled: %s, updating solved to %hhd", *GetName(), !bSolved)
 	bSolved = !bSolved;

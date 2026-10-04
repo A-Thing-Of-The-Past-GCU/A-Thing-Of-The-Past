@@ -6,13 +6,13 @@
 #include "Interaction/SolutionRequirement.h"
 #include "Interaction/SolverComponent.h"
 #include "UObject/Object.h"
-#include "ComponentClickedRequirement.generated.h"
+#include "ChildActorClickedRequirement.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATHINGOFTHEPAST_API UComponentClickedRequirement : public USolutionRequirement
+class ATHINGOFTHEPAST_API UChildActorClickedRequirement : public USolutionRequirement
 {
 	GENERATED_BODY()
 
