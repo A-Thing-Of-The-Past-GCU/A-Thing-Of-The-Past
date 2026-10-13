@@ -12,4 +12,4 @@ Hero repot for the Unreal Engine AToTP project. Currently in previs and prototyp
 * [Ross Semple](https://github.com/Rocco156) - Programmer (w/ graph comm knowledge)
 * Aydan Stuart - Designer
 * [Aurelia Wrotek](https://github.com/aurreliaw) - Artist (w/ experience in Graphic Design + UI)
-* [Chloe Morfitt](https://github.com/Morfittie) Artist
+* [Chloe Morfitt](https://github.com/Morfittie) - Artist
