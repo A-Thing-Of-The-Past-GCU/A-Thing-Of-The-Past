@@ -17,7 +17,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetDragStrength(const FVector2D DragStrength);
 	
-	/** Desired drag angle (0 = 12:00. 90 = 03:) */
+	/** Desired drag angle (0 = 12:00. 90 = 03:00) */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = -180, UIMax = 180))
 	float TargetAngle = 45.0f;
 	
