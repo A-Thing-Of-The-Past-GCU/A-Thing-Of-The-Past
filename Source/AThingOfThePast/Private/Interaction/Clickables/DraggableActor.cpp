@@ -55,33 +55,17 @@ void ADraggableActor::SetDragStrength(const FVector2D DragStrength)
 	float OutputLength = OutputVector.Length();
 	UE_LOG(LogTemp, Log, TEXT("Output Length: %f"), OutputLength);
 	
-	
-	
-	// TargetStrength;
-	// TargetStrengthTolerance;
-	// UseTargetStrengthToleranceFalloff;
-	// TargetStrengthToleranceFalloff;
-	
-	// Target : 0.5
-	// Tolerance : 0.5
-	
-	// Length : 0.6
-	
-	// 0.25 - 0.75
-	
-	// 0.6 - 0.5 = 0.1
-	// 0.4 - 0.5 = -0.1
 	float OutputStrengthOffset = FMath::Abs(OutputLength - TargetStrength);
 	UE_LOG(LogTemp, Log, TEXT("Output Strength Offset: %f"), OutputStrengthOffset);
 	
 	if (UseTargetStrengthToleranceFalloff)
 	{
 		float hold = (OutputStrengthOffset - TargetStrengthTolerance / 2) / TargetStrengthToleranceFalloff;
-		OutputAlpha = FMath::Lerp(1.0f, 0.0f, FMath::Clamp(hold, 0.0f, 1.0f));	
+		OutputAlpha = FMath::Lerp(AlphaMax, AlphaMin, FMath::Clamp(hold, 0.0f, 1.0f));	
 	}
 	else
 	{
-		OutputAlpha = OutputStrengthOffset <= TargetStrength + TargetStrengthTolerance / 2;
+		OutputAlpha = (OutputStrengthOffset <= TargetStrength + TargetStrengthTolerance / 2) ? AlphaMax : AlphaMin;
 	}
 	
 	
