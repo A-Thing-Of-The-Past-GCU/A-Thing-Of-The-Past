@@ -9,6 +9,12 @@ void UComponentClickedRequirement::BeginPlay_Implementation()
 	
 	LOG("Entered: %s", *GetName())
 	
+	if (!ComponentReference.OtherActor.IsValid())
+	{
+		ComponentReference.OtherActor = SolverComponentReference->GetOwner();
+	}
+	
+	
 	UActorComponent* CompReference = GetComponentReference();
 	if (!CompReference)
 	{
@@ -36,7 +42,7 @@ void UComponentClickedRequirement::HandleClicked(UPrimitiveComponent* TouchedCom
 
 void UComponentClickedRequirement::OnClicked_Implementation(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-	LOG("OnClickedCalled: %s, updating solved to %hhd", *GetName(), !bSolved)
+	LOG("OnClickedCalled: %s (%s), updating solved to %hhd", *GetName(), *TouchedComponent->GetName(), !bSolved)
 	bSolved = !bSolved;
 	OnSolvedUpdated.Broadcast(this, bSolved);
 }
