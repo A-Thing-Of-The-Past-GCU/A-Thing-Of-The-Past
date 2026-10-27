@@ -44,8 +44,13 @@ public:
 	bool UseTargetStrengthToleranceFalloff = true;
 	
 	/** Additional soft falloff angle after leaving the Target Strength, and the Target Strength Tolerance. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = 0, UIMax = 180, EditCondition = UseTargetStrengthToleranceFalloff))
-	float TargetStrengthToleranceFalloff = 45.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = 0, UIMax = 1, EditCondition = UseTargetStrengthToleranceFalloff))
+	float TargetStrengthToleranceFalloff = 0.25f;
+	
+	//ToDo: Use this to prevent recursive changes to the position on slightly off inputs. 
+	//Player input after being processed for the visible display.
+	UPROPERTY(BlueprintReadOnly, Category = Output)
+	FVector2D VisibleOutputVector;
 	
 	//Player input after being processed.
 	UPROPERTY(BlueprintReadOnly, Category = Output)

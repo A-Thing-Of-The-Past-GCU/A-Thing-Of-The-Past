@@ -42,7 +42,7 @@ void ADraggableActor::SetDragStrength(const FVector2D DragStrength)
 	}
 	
 	UE_LOG(LogTemp, Log, TEXT("Pre-Clamp Output Vector: X%f:Y%f"), output.X, output.Y);
-	UE_LOG(LogTemp, Log, TEXT("Pre-Clamp Output Length: X%f"), output.GetAbs().Length());
+	UE_LOG(LogTemp, Log, TEXT("Pre-Clamp Output Length: %f"), output.GetAbs().Length());
 	
 	// OutputVector = FVector2D::Min(output, output.GetSafeNormal());
 	
@@ -52,7 +52,40 @@ void ADraggableActor::SetDragStrength(const FVector2D DragStrength)
 	// 	FVector2D(-1.0f), 
 	// 	FVector2D(1.0f));
 		
-	OutputAlpha = OutputVector.Length();
+	float OutputLength = OutputVector.Length();
+	UE_LOG(LogTemp, Log, TEXT("Output Length: %f"), OutputLength);
+	
+	
+	
+	// TargetStrength;
+	// TargetStrengthTolerance;
+	// UseTargetStrengthToleranceFalloff;
+	// TargetStrengthToleranceFalloff;
+	
+	// Target : 0.5
+	// Tolerance : 0.5
+	
+	// Length : 0.6
+	
+	// 0.25 - 0.75
+	
+	// 0.6 - 0.5 = 0.1
+	// 0.4 - 0.5 = -0.1
+	float OutputStrengthOffset = FMath::Abs(OutputLength - TargetStrength);
+	UE_LOG(LogTemp, Log, TEXT("Output Strength Offset: %f"), OutputStrengthOffset);
+	
+	if (UseTargetStrengthToleranceFalloff)
+	{
+		float hold = (OutputStrengthOffset - TargetStrengthTolerance / 2) / TargetStrengthToleranceFalloff;
+		OutputAlpha = FMath::Lerp(1.0f, 0.0f, FMath::Clamp(hold, 0.0f, 1.0f));	
+	}
+	else
+	{
+		OutputAlpha = OutputStrengthOffset <= TargetStrength + TargetStrengthTolerance / 2;
+	}
+	
+	
+	
 	
 	UE_LOG(LogTemp, Log, TEXT("!Output Vector: X%f:Y%f"), OutputVector.X, OutputVector.Y);
 	UE_LOG(LogTemp, Log, TEXT("!Output Alpha: %f"), OutputAlpha);
