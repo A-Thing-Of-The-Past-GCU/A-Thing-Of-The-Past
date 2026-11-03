@@ -23,7 +23,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UItemDefinition> SlotDefinitionExample;
 	
-	/***/
+	/**The actual type of item that it is e.g. Item.Tool, Item.Key, Item.*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) 
 	TArray<FGameplayTag> Item;
 	
@@ -32,7 +32,6 @@ public:
 	 * and then allows access, */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere) 
 	TArray<FGameplayTag> ItemTypes;
-	
 	//Ideally i would want some components, stack count etc but the design isn't really there yet for that.
 	
 protected:
