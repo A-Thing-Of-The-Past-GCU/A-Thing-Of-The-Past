@@ -19,8 +19,20 @@ public:
 	
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bSolved;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintSetter = SetSolved)
+	bool bSolved = false;
+
+	UFUNCTION(BlueprintCallable)
+	void SetSolved(const bool NewSolved)
+	{
+		if (NewSolved == bSolved)
+		{
+			return;
+		}
+		
+		bSolved = NewSolved;
+		OnSolvedChanged.Broadcast(NewSolved);
+	}
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<TObjectPtr<UPuzzleRequirement>> SolutionRequirements;
