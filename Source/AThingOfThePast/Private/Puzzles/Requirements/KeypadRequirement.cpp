@@ -1,41 +1,37 @@
 // Copyright GCU 2026. All rights reserved.
 
 
-#include "Interaction/Requirements/KeypadRequirement.h"
+#include "Puzzles/Requirements/KeypadRequirement.h"
 
 #include "Kismet/KismetSystemLibrary.h"
 
 void UKeypadRequirement::BeginPlay_Implementation()
 {
 	Super::BeginPlay_Implementation();
-	
-	LOG("Entered: %s", *GetName())
 
-	for (auto [Key, Reference] : KeypadReferences)
+	for (auto [Key, Name] : KeypadReferences)
 	{
-		const auto Component = Reference.GetComponent(SolverComponentReference->GetOwner());
-		
-		if (!Component)
-		{
-			LOG("BadCompReference: %s", *Reference.ComponentProperty.ToString())
-			continue;
-		}
-	
-		
-		
-		if (const auto ChildActorComponent = Cast<UChildActorComponent>(Component))
-		{
-			KeypadPointers.Add(ChildActorComponent->GetChildActor(), Key);
-			LOG("GoodPrimitive %s : %s", *ChildActorComponent->GetName(), *ChildActorComponent->GetOwner()->GetName())
-			ChildActorComponent->GetChildActor()->OnClicked.AddUniqueDynamic(
-				this,
-				&UKeypadRequirement::HandleClicked);
-		}
-	
-		LOG("Continue")
+		// const auto Component = Reference.GetComponent(SolverComponentReference->GetOwner());
+		//
+		// if (!Component)
+		// {
+		// 	LOG("BadCompReference: %s", *Reference.ComponentProperty.ToString())
+		// 	continue;
+		// }
+		//
+		//
+		//
+		// if (const auto ChildActorComponent = Cast<UChildActorComponent>(Component))
+		// {
+		// 	KeypadPointers.Add(ChildActorComponent->GetChildActor(), Key);
+		// 	LOG("GoodPrimitive %s : %s", *ChildActorComponent->GetName(), *ChildActorComponent->GetOwner()->GetName())
+		// 	ChildActorComponent->GetChildActor()->OnClicked.AddUniqueDynamic(
+		// 		this,
+		// 		&UKeypadRequirement::HandleClicked);
+		// }
+		//
+		// LOG("Continue")
 	}
-	
-	LOG("Exit")
 	
 }
 

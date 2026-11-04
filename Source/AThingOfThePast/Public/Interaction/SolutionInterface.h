@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SolverComponent.h"
+#include "Requirements/ComponentClickedRequirement.h"
 #include "UObject/Interface.h"
 #include "SolutionInterface.generated.h"
 
@@ -38,6 +38,6 @@ public:
 	bool GetSolved();
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void RegisterSolver(USolverComponent* SolverComponent);
+	void RegisterSolver(UPuzzleSolverComponent* SolverComponent);
 	
 };

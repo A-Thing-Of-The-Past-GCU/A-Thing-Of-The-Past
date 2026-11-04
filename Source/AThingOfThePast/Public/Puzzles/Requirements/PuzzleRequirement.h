@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "SolutionRequirement.generated.h"
+#include "PuzzleRequirement.generated.h"
 
 
 #define LOG(Text, ...) UE_LOG(LogTemp, Log, TEXT(Text), ##__VA_ARGS__);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicSolvedUpdated, const USolutionRequirement*, UpdatedRequirement, bool, bSolved);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicSolvedUpdated, const UPuzzleRequirement*, UpdatedRequirement, bool, bSolved);
 
 UCLASS(Abstract, BlueprintType, EditInlineNew, DefaultToInstanced, Blueprintable)
-class ATHINGOFTHEPAST_API USolutionRequirement : public UObject
+class ATHINGOFTHEPAST_API UPuzzleRequirement : public UObject
 {
 	GENERATED_BODY()
 	
@@ -24,23 +24,26 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bSolved = false;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Config")
-	bool bSolvedByDefault = false;
+	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Config")
+	// bool bSolvedByDefault = false;
 
 protected:
 	
 	// Allows USolverComponent to access BeginPlay 
 	// without creating a circular dependency
-	friend class USolverComponent;
+	friend class UPuzzleSolverComponent;
 	
 	UPROPERTY(BlueprintReadOnly)
-	USolverComponent* SolverComponentReference;
+	UPuzzleSolverComponent* OwningSolverComponent;
+	
+	UPROPERTY(BlueprintReadOnly)
+	AActor* OwningActor;
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void BeginPlay();
 	
 private:
 	
-	void Internal_BeginPlay(USolverComponent* SolverComponent);
+	void Internal_BeginPlay(UPuzzleSolverComponent* PuzzleSolverComponent);
 	
 };
