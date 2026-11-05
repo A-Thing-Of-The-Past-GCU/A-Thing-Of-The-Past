@@ -13,7 +13,10 @@ APuzzleCoordinator::APuzzleCoordinator()
 #if WITH_EDITORONLY_DATA
 	
 	EditorBillboard = CreateDefaultSubobject<UBillboardComponent>(TEXT("Editor Billboard"));	
+	EditorBillboard->bIsScreenSizeScaled = true;
+	
 	RootComponent = EditorBillboard;
+	
 	
 	static ConstructorHelpers::FObjectFinder<UTexture2D> TextureAsset(
 	TEXT("/Game/Game/Puzzles/T_PuzzleCoordinator.T_PuzzleCoordinator")
