@@ -4,6 +4,7 @@
 #include "Puzzles/PuzzleCoordinator.h"
 
 #include "Components/BillboardComponent.h"
+#include "Puzzles/PuzzleSolution.h"
 
 APuzzleCoordinator::APuzzleCoordinator()
 {
@@ -36,6 +37,17 @@ void APuzzleCoordinator::SetSolved(const bool NewSolved)
 	}
 	
 	bSolved = NewSolved;
+
+	for (auto OutputActor : OutputActors)
+	{
+		if (!IsValid(OutputActor) || !OutputActor->Implements<UPuzzleSolution>())
+		{
+			continue;
+		}
+		
+		IPuzzleSolution::Execute_OnPuzzleSolvedUpdated(OutputActor, NewSolved);
+	}
+	
 	OnSolvedChanged.Broadcast(bSolved);
 }
 
@@ -77,7 +89,6 @@ void APuzzleCoordinator::OnComponentSolvedChanged_Implementation(const bool NewS
 		}
 	}
 	
-	bSolved = NewSolved;
-	OnSolvedChanged.Broadcast(bSolved);
+	SetSolved(NewSolved);
 }
 
