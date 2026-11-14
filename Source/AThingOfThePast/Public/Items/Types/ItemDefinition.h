@@ -21,6 +21,9 @@ public:
 	FText DisplayName = INVTEXT("Default Item");
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UTexture2D> Thumbnail;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UItemDefinition> SlotDefinitionExample;
 	
 	/**The actual type of item that it is e.g. Item.Tool, Item.Key, Item.*/

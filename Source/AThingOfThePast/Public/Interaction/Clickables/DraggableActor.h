@@ -47,6 +47,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = 0, UIMax = 1, EditCondition = UseTargetStrengthToleranceFalloff))
 	float TargetStrengthToleranceFalloff = 0.25f;
 	
+	//
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration)
+	float AlphaMin = 0.0f;
+	
+	// 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration)
+	float AlphaMax = 1.0f;
+	
 	//ToDo: Use this to prevent recursive changes to the position on slightly off inputs. 
 	//Player input after being processed for the visible display.
 	UPROPERTY(BlueprintReadOnly, Category = Output)
