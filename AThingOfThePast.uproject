@@ -25,6 +25,11 @@
 		{
 			"Name": "GameplayStateTree",
 			"Enabled": true
+		},
+		{
+			"Name": "TogglePrintStrings",
+			"Enabled": false,
+			"MarketplaceURL": "https://www.fab.com/listings/4d107d73-7829-4bf9-97cb-78c7931a433e"
 		}
 	]
 }
