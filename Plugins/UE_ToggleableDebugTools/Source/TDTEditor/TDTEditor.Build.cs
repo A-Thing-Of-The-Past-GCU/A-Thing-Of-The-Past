@@ -24,8 +24,6 @@ public class TDTEditor : ModuleRules
                 "UnrealEd",
                 "EditorScriptingUtilities",
                 "BlueprintGraph",
-                "UDCAsyncSaveGame",
-                "UDCEvents", 
                 "StructUtils",
                 
                 
