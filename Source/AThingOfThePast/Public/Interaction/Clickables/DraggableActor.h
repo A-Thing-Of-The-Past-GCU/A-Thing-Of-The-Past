@@ -3,69 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SphereComponent.h"
-#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
-#include "DraggableComponent.generated.h"
+#include "DraggableActor.generated.h"
 
-UCLASS(ClassGroup=(AThingOfThePast), meta=(BlueprintSpawnableComponent))
-class ATHINGOFTHEPAST_API UDraggableComponent : public UWidgetComponent
+UCLASS()
+class ATHINGOFTHEPAST_API ADraggableActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	
-	UDraggableComponent();
-
-	
-#pragma region Interaction
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
-	TSubclassOf<UUserWidget> TelegraphingWidget;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
-	float SphereRadius = 15.0f;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction", AdvancedDisplay)
-	FTransform TelegraphingWidgetTransform = FTransform::Identity;
-	
-#pragma endregion
-	
-	
-#pragma region Transient
-	
-	UPROPERTY(Transient, BlueprintReadOnly, VisibleAnywhere, Category = "Configuration|Interaction")
-	bool Enabled = false;
-	
-	UPROPERTY(Transient, BlueprintReadOnly, VisibleAnywhere, Category = "Configuration|Interaction")
-	FVector2D TargetClickedCursorLocation = FVector2D::ZeroVector;
-	
-	/**Unreal really doesn't like ActorComponents keeping track of their own children, 
-	 * so on Register we create our components, and on unregister we clear them*/
-	
-	UPROPERTY(Transient)
-	TObjectPtr<USphereComponent> InteractionTarget;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UWidgetComponent> InteractionWidget;
-	
-	UPROPERTY(Transient)
-	TObjectPtr<UWidgetComponent> InteractionTelegraphWidget;
-	
-    /**Used to manage the lifetime of the child components*/
-	
-	virtual void OnRegister() override;
-	virtual void OnUnregister() override;
-	
-#pragma endregion 
-	
-	UFUNCTION()
-	void OnTargetClicked(UPrimitiveComponent* TouchedComponent , FKey ButtonPressed);
-	
-	UFUNCTION()
-	void OnTargetReleased(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
-	
-#pragma region Logic
+	ADraggableActor();
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDragStrength(const FVector2D DragStrength);
@@ -120,10 +67,10 @@ public:
 	//Player input after being processed and measured.
 	UPROPERTY(BlueprintReadOnly, Category = Output)
 	float OutputAlpha;
-	
-#pragma endregion 
 
+protected:
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+public:	
+	virtual void Tick(float DeltaTime) override;
 };
