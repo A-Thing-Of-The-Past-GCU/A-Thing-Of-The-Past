@@ -6,6 +6,8 @@
 #include "PuzzleTypes.h"
 #include "PuzzleSolverComponent.h"
 #include "GameFramework/Actor.h"
+#include "Components/BillboardComponent.h"
+
 #include "PuzzleCoordinator.generated.h"
 
 UCLASS()

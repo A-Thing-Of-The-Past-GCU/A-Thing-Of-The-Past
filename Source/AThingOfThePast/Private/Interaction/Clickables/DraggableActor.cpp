@@ -1,6 +1,5 @@
 // Copyright GCU 2026. All rights reserved.
 
-
 #include "Interaction/Clickables/DraggableActor.h"
 
 // Sets default values
