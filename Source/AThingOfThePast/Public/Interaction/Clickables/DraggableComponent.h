@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "CursorInteractionPromptWidget.h"
 #include "DraggableWidget.h"
-#include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
@@ -22,7 +21,7 @@ class ATHINGOFTHEPAST_API UDraggableComponent : public USceneComponent
 public:	
 	
 	UDraggableComponent();
-	~UDraggableComponent();
+	virtual ~UDraggableComponent() override;
 	
 #pragma region Interaction
 	
@@ -155,19 +154,22 @@ public:
 	//ToDo: Use this to prevent recursive changes to the position on slightly off inputs. 
 	//Player input after being processed for the visible display.
 	UPROPERTY(BlueprintReadOnly, Category = Output)
-	FVector2D VisibleOutputVector;
+	FVector2D VisibleOutputVector = FVector2D::ZeroVector;
 	
 	//Player input after being processed.
 	UPROPERTY(BlueprintReadOnly, Category = Output)
-	FVector2D OutputVector;
+	FVector2D OutputVector = FVector2D::ZeroVector;
 	
 	//Player input after being processed and measured.
 	UPROPERTY(BlueprintReadOnly, Category = Output)
-	float OutputAlpha;
+	float OutputAlpha = AlphaMin;
 	
 #pragma endregion 
 
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	virtual void Activate(bool bReset = false) override;
+	virtual void Deactivate() override;
 
 };

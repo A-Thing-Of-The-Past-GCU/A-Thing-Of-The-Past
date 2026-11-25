@@ -283,3 +283,21 @@ void UDraggableComponent::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 		SetDragStrength(UWidgetLayoutLibrary::GetMousePositionOnViewport(this) -  TargetClickedCursorLocation);
 	}
 }
+
+void UDraggableComponent::Activate(bool bReset)
+{
+	Super::Activate(bReset);
+	
+	InteractionTarget->Activate(bReset);
+	InteractionWidget->Activate(bReset);
+	InteractionPromptWidget->Activate(bReset);
+}
+
+void UDraggableComponent::Deactivate()
+{
+	Super::Deactivate();
+	
+	InteractionTarget->Deactivate();
+	InteractionWidget->Deactivate();
+	InteractionPromptWidget->Deactivate();
+}

@@ -73,7 +73,7 @@ public:
 	
 	/**Should new DebugTags have their prints enabled by default*/
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Settings")
-	bool PrintingEnabledByDefault = true;
+	bool PrintingEnabledByDefault = false;
 	
 	/**Should new DebugTags have their logs enabled by default*/
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Settings")
@@ -81,7 +81,7 @@ public:
 	
 	/** */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Settings")
-	bool DebugDrawingEnabledByDefault = true;
+	bool DebugDrawingEnabledByDefault = false;
 	
 	// void Internal_SetOutputSettings(const FGameplayTag InDebugTag, const EDebugEnabled_TDT PrintEnabled = TDT_Undefined, const EDebugEnabled_TDT LoggingEnabled = TDT_Undefined);
 	
