@@ -10,6 +10,48 @@ UDraggableComponent::UDraggableComponent()
 {
 }
 
+void UDraggableComponent::SetInteractionEnabled()
+{
+	if (Enabled)
+	{
+		return;
+	}
+	
+	TargetClickedCursorLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
+	InteractionPromptWidget->SetVisibility(false);
+	InteractionWidget->SetVisibility(true);
+	Enabled = true;
+	
+	onDragComponentStarted.Broadcast();
+	
+	InteractionTarget->SetSphereRadius(10000.0f);
+}
+
+void UDraggableComponent::SetInteractionDisabled()
+{
+	if (!Enabled)
+	{
+		return;
+	}
+	
+	TargetClickedCursorLocation = FVector2D::ZeroVector;
+	
+	DisableInteractionWidget();
+	
+	SetDragStrength(TargetClickedCursorLocation);
+	Enabled = false;
+	
+	onDragComponentEnded.Broadcast();
+	
+	InteractionTarget->SetSphereRadius(SphereRadius);
+}
+
+void UDraggableComponent::DisableInteractionWidget()
+{
+	InteractionPromptWidget->SetVisibility(true);
+	InteractionWidget->SetVisibility(false);
+}
+
 void UDraggableComponent::OnRegister()
 {
 	Super::OnRegister();
@@ -18,37 +60,55 @@ void UDraggableComponent::OnRegister()
 	{
 		InteractionTarget = NewObject<USphereComponent>(this, TEXT("Interaction Target"));
 		InteractionTarget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-		InteractionTarget->RegisterComponent();
-	
-		InteractionTarget->SetSphereRadius(SphereRadius);
 		
-		InteractionTarget->OnClicked.AddUniqueDynamic(this, &UDraggableComponent::OnTargetClicked);
-		InteractionTarget->OnReleased.AddUniqueDynamic(this, &UDraggableComponent::OnTargetReleased);
+		InteractionTarget->RegisterComponent();
 	}
+	
+	InteractionTarget->SetSphereRadius(SphereRadius);
+	InteractionTarget->SetCollisionProfileName("UI");
+		
+	InteractionTarget->OnClicked.AddUniqueDynamic(this, &UDraggableComponent::OnTargetClicked);
+	InteractionTarget->OnReleased.AddUniqueDynamic(this, &UDraggableComponent::OnTargetReleased);
 	
 	if (!InteractionWidget)
 	{
 		InteractionWidget = NewObject<UWidgetComponent>(this, TEXT("Interaction Widget"));
 		InteractionWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		
 		InteractionWidget->RegisterComponent();
-		
-		InteractionWidget->SetVisibility(false);
-		
-		InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
-		InteractionWidget->SetDrawAtDesiredSize(true);
 	}
 	
-	if (!InteractionTelegraphWidget)
+	InteractionWidget->SetWidgetClass(InteractionWidgetClass);
+		
+	InteractionWidget->SetCollisionProfileName("NoCollision");
+	InteractionWidget->SetVisibility(false);
+	InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	InteractionWidget->SetDrawAtDesiredSize(false);
+	InteractionWidget->SetPivot(FVector2D(0.0f, 0.0f));
+	
+	if (!InteractionPromptWidget)
 	{
-		InteractionTelegraphWidget = NewObject<UWidgetComponent>(this, TEXT("Interaction Telegraph Widget"));
-		InteractionTelegraphWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-		InteractionTelegraphWidget->RegisterComponent();
+		InteractionPromptWidget = NewObject<UWidgetComponent>(this, TEXT("Interaction Telegraph Widget"));
+		InteractionPromptWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		
-		InteractionTelegraphWidget->SetVisibility(true);
-		
-		InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
-		InteractionTelegraphWidget->SetDrawAtDesiredSize(true);
+		InteractionPromptWidget->RegisterComponent();
 	}
+		
+	InteractionPromptWidget->SetWidgetClass(InteractionPromptWidgetClass);
+	
+	if (InteractionPromptWidget)
+	{
+		InteractionPromptWidget->SetMaterial(0, InteractionPromptMaterial);
+	}
+		
+	InteractionPromptWidget->SetCollisionProfileName("NoCollision");
+	InteractionPromptWidget->SetVisibility(true);
+	InteractionPromptWidget->SetWidgetSpace(EWidgetSpace::World);
+	InteractionPromptWidget->SetDrawAtDesiredSize(true);
+	InteractionPromptWidget->SetRelativeLocationAndRotation(PromptWidgetTransform.GetLocation(), PromptWidgetTransform.GetRotation());
+	InteractionPromptWidget->SetWorldScale3D(PromptWidgetTransform.GetScale3D());
+	// InteractionPromptWidget->SetRelativeTransform(PromptWidgetTransform);
+	
 	
 }
 
@@ -59,6 +119,7 @@ void UDraggableComponent::OnUnregister()
 	if (InteractionTarget)
 	{
 		InteractionTarget->OnClicked.RemoveDynamic(this, &UDraggableComponent::OnTargetClicked);
+		InteractionTarget->OnReleased.RemoveDynamic(this, &UDraggableComponent::OnTargetReleased);
 		
 		InteractionTarget->DestroyComponent();
 		InteractionTarget = nullptr;
@@ -70,41 +131,31 @@ void UDraggableComponent::OnUnregister()
 		InteractionWidget = nullptr;
 	}
 	
-	if (InteractionTelegraphWidget)
+	if (InteractionPromptWidget)
 	{
-		InteractionTelegraphWidget->DestroyComponent();
-		InteractionTelegraphWidget = nullptr;
+		InteractionPromptWidget->DestroyComponent();
+		InteractionPromptWidget = nullptr;
 	}
 	
 }
 
 void UDraggableComponent::OnTargetClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-	TargetClickedCursorLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
-	InteractionTelegraphWidget->SetVisibility(false);
-	InteractionWidget->SetVisibility(true);
-	Enabled = true;
-	
-	InteractionTarget->SetSphereRadius(10000.0f);
+	SetInteractionEnabled();
 }
 
 void UDraggableComponent::OnTargetReleased(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
-	TargetClickedCursorLocation = FVector2D::ZeroVector;
-	InteractionTelegraphWidget->SetVisibility(true);
-	InteractionWidget->SetVisibility(false);
-	SetDragStrength(TargetClickedCursorLocation);
-	Enabled = false;
-	
-	InteractionTarget->SetSphereRadius(SphereRadius);
+	SetInteractionDisabled();
 } 
 
 void UDraggableComponent::SetDragStrength(const FVector2D DragStrength)
 {
+	const FVector2D ScaledDragStrength = DragStrength / MaxDragDistance;
 	//UE_LOG(LogTemp, Log, TEXT("  /  "));
 	//UE_LOG(LogTemp, Log, TEXT("  /  "));
-	//UE_LOG(LogTemp, Log, TEXT("Drag Strength Vector: X%f:Y%f"), DragStrength.X, DragStrength.Y);
-	const float inputAngle = FMath::RadiansToDegrees(FMath::Atan2(DragStrength.Y, DragStrength.X));
+	//UE_LOG(LogTemp, Log, TEXT("Drag Strength Vector: X%f:Y%f"), ScaledDragStrength.X, ScaledDragStrength.Y);
+	const float inputAngle = FMath::RadiansToDegrees(FMath::Atan2(ScaledDragStrength.Y, ScaledDragStrength.X));
 	//UE_LOG(LogTemp, Log, TEXT("Input angle: %f"), inputAngle);
 	
 	const float inputAngleOffsetFromTarget = FMath::FindDeltaAngleDegrees(inputAngle, TargetAngle);
@@ -123,12 +174,12 @@ void UDraggableComponent::SetDragStrength(const FVector2D DragStrength)
 		alpha /= TargetAngleToleranceFalloff / 2;
 		//UE_LOG(LogTemp, Log, TEXT("alpha 2: %f"), alpha);
 		
-		output = DragStrength * FMath::Lerp(1.0f, 0.0f, FMath::Clamp(alpha, 0.0f, 1.0f));
+		output = ScaledDragStrength * FMath::Lerp(1.0f, 0.0f, FMath::Clamp(alpha, 0.0f, 1.0f));
 		//UE_LOG(LogTemp, Log, TEXT("alpha 3: %f"), FMath::Lerp(1.0f, 0.0f, FMath::Clamp(alpha, 0.0f, 1.0f)));
 	}
 	else
 	{
-		output = DragStrength * (inputAngleProximity < TargetAngleTolerance / 2);
+		output = ScaledDragStrength * (inputAngleProximity < TargetAngleTolerance / 2);
 	}
 	
 	//UE_LOG(LogTemp, Log, TEXT("Pre-Clamp Output Vector: X%f:Y%f"), output.X, output.Y);
@@ -145,15 +196,14 @@ void UDraggableComponent::SetDragStrength(const FVector2D DragStrength)
 	if (UseTargetStrengthToleranceFalloff)
 	{
 		float hold = (OutputStrengthOffset - TargetStrengthTolerance / 2) / TargetStrengthToleranceFalloff;
+		//UE_LOG(LogTemp, Log, TEXT("OutputStrength Offset: %f"), hold);
+		
 		OutputAlpha = FMath::Lerp(AlphaMax, AlphaMin, FMath::Clamp(hold, 0.0f, 1.0f));	
 	}
 	else
 	{
 		OutputAlpha = (OutputStrengthOffset <= TargetStrength + TargetStrengthTolerance / 2) ? AlphaMax : AlphaMin;
 	}
-	
-	
-	
 	
 	//UE_LOG(LogTemp, Log, TEXT("!Output Vector: X%f:Y%f"), OutputVector.X, OutputVector.Y);
 	//UE_LOG(LogTemp, Log, TEXT("!Output Alpha: %f"), OutputAlpha);
@@ -164,6 +214,29 @@ void UDraggableComponent::BeginPlay()
 	TargetAngle = FMath::Wrap(TargetAngle - 90, -180.0f, 180.0f);
 
 	Super::BeginPlay();
+	
+	InteractionWidget->InitWidget();
+	InteractionPromptWidget->InitWidget();
+	
+	if (InteractionWidget->GetUserWidgetObject())
+	{
+		if (UDraggableWidget* draggableWidget = Cast<UDraggableWidget>(InteractionWidget->GetWidget()))
+		{
+			draggableWidget->DraggableComponent = this;
+		}
+	}
+	else
+	{
+		UE_LOG(LogEngine, Error, TEXT("BadWidget"))
+	}
+	
+	if (InteractionPromptWidget->GetUserWidgetObject())
+	{
+		if (UCursorInteractionPromptWidget* interactionPromptWidget = Cast<UCursorInteractionPromptWidget>(InteractionPromptWidget->GetWidget()))
+		{
+			interactionPromptWidget->AssignOverlapPrimitive(InteractionTarget);
+		}
+	}
 }
 
 void UDraggableComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

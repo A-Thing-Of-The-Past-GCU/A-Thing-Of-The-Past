@@ -3,10 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CursorInteractionPromptWidget.h"
+#include "DraggableWidget.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "DraggableComponent.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDragComponentStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDragComponentEnded);
 
 UCLASS(ClassGroup=(AThingOfThePast), meta=(BlueprintSpawnableComponent))
 class ATHINGOFTHEPAST_API UDraggableComponent : public UWidgetComponent
@@ -21,16 +26,36 @@ public:
 #pragma region Interaction
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
-	TSubclassOf<UUserWidget> TelegraphingWidget;
+	TSubclassOf<UDraggableWidget> InteractionWidgetClass;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
+	TSubclassOf<UCursorInteractionPromptWidget> InteractionPromptWidgetClass;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
 	float SphereRadius = 15.0f;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction", AdvancedDisplay)
-	FTransform TelegraphingWidgetTransform = FTransform::Identity;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
+	FTransform PromptWidgetTransform = FTransform::Identity;;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
+	UMaterialInterface* InteractionPromptMaterial;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDragComponentStarted onDragComponentStarted;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDragComponentEnded onDragComponentEnded;
 	
 #pragma endregion
 	
+	UFUNCTION(BlueprintCallable)
+	void SetInteractionEnabled();
+	
+	UFUNCTION(BlueprintCallable)
+	void SetInteractionDisabled();
+	
+	UFUNCTION(BlueprintCallable)
+	void DisableInteractionWidget();
 	
 #pragma region Transient
 	
@@ -50,7 +75,7 @@ public:
 	TObjectPtr<UWidgetComponent> InteractionWidget;
 	
 	UPROPERTY(Transient)
-	TObjectPtr<UWidgetComponent> InteractionTelegraphWidget;
+	TObjectPtr<UWidgetComponent> InteractionPromptWidget;
 	
     /**Used to manage the lifetime of the child components*/
 	
@@ -69,6 +94,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDragStrength(const FVector2D DragStrength);
+	
+	/** Distance (in pixels) that is required for a max strength pull */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = -180, UIMax = 180))
+	float MaxDragDistance = 70.0f;
 	
 	/** Desired drag angle (0 = 12:00. 90 = 03:00) */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Configuration, meta = (UIMin = -180, UIMax = 180))
