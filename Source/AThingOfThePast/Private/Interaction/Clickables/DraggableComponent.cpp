@@ -8,6 +8,8 @@
 // Sets default values
 UDraggableComponent::UDraggableComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
 void UDraggableComponent::SetInteractionEnabled()
@@ -52,6 +54,11 @@ void UDraggableComponent::DisableInteractionWidget()
 	InteractionWidget->SetVisibility(false);
 }
 
+void UDraggableComponent::SetPromptHiddenInGame(const bool bHidden)
+{
+	InteractionPromptWidget->SetHiddenInGame(bHidden);
+}
+
 void UDraggableComponent::OnRegister()
 {
 	Super::OnRegister();
@@ -86,6 +93,9 @@ void UDraggableComponent::OnRegister()
 	InteractionWidget->SetDrawAtDesiredSize(false);
 	InteractionWidget->SetPivot(FVector2D(0.0f, 0.0f));
 	
+	InteractionWidget->SetRelativeLocationAndRotation(InteractionWidgetTransform.GetLocation(), InteractionWidgetTransform.GetRotation());
+	InteractionWidget->SetWorldScale3D(InteractionWidgetTransform.GetScale3D());
+	
 	if (!InteractionPromptWidget)
 	{
 		InteractionPromptWidget = NewObject<UWidgetComponent>(this, TEXT("Interaction Telegraph Widget"));
@@ -105,6 +115,7 @@ void UDraggableComponent::OnRegister()
 	InteractionPromptWidget->SetVisibility(true);
 	InteractionPromptWidget->SetWidgetSpace(EWidgetSpace::World);
 	InteractionPromptWidget->SetDrawAtDesiredSize(true);
+	
 	InteractionPromptWidget->SetRelativeLocationAndRotation(PromptWidgetTransform.GetLocation(), PromptWidgetTransform.GetRotation());
 	InteractionPromptWidget->SetWorldScale3D(PromptWidgetTransform.GetScale3D());
 	// InteractionPromptWidget->SetRelativeTransform(PromptWidgetTransform);

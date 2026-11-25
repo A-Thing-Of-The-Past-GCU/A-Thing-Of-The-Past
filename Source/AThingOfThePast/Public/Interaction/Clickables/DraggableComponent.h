@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CursorInteractionPromptWidget.h"
 #include "DraggableWidget.h"
+#include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
@@ -14,14 +15,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDragComponentStarted);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDragComponentEnded);
 
 UCLASS(ClassGroup=(AThingOfThePast), meta=(BlueprintSpawnableComponent))
-class ATHINGOFTHEPAST_API UDraggableComponent : public UWidgetComponent
+class ATHINGOFTHEPAST_API UDraggableComponent : public USceneComponent
 {
 	GENERATED_BODY()
 	
 public:	
 	
 	UDraggableComponent();
-
 	
 #pragma region Interaction
 	
@@ -40,6 +40,10 @@ public:
 	/** Offset applied to the telegraphing widget */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
 	FTransform PromptWidgetTransform = FTransform::Identity;
+	
+	/** Offset applied to the telegraphing widget */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
+	FTransform InteractionWidgetTransform = FTransform::Identity;
 	
 	/** Material applied to the telegraphing widget */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
@@ -64,6 +68,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisableInteractionWidget();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetPromptHiddenInGame(const bool bHidden);
+	
 #pragma region Transient
 	
 	UPROPERTY(Transient, BlueprintReadOnly, VisibleAnywhere, Category = "Configuration|Interaction")
@@ -75,13 +82,13 @@ public:
 	/**Unreal really doesn't like ActorComponents keeping track of their own children, 
 	 * so on Register we create our components, and on unregister we clear them*/
 	
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, BlueprintReadOnly, VisibleInstanceOnly)
 	TObjectPtr<USphereComponent> InteractionTarget;
 	
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, BlueprintReadOnly, VisibleInstanceOnly)
 	TObjectPtr<UWidgetComponent> InteractionWidget;
 	
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, BlueprintReadOnly, VisibleInstanceOnly)
 	TObjectPtr<UWidgetComponent> InteractionPromptWidget;
 	
     /**Used to manage the lifetime of the child components*/
