@@ -12,6 +12,30 @@ UDraggableComponent::UDraggableComponent()
 	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
+UDraggableComponent::~UDraggableComponent()
+{
+	if (InteractionTarget)
+	{
+		InteractionTarget->OnClicked.RemoveDynamic(this, &UDraggableComponent::OnTargetClicked);
+		InteractionTarget->OnReleased.RemoveDynamic(this, &UDraggableComponent::OnTargetReleased);
+		
+		InteractionTarget->DestroyComponent();
+		InteractionTarget = nullptr;
+	}
+	
+	if (InteractionWidget)
+	{
+		InteractionWidget->DestroyComponent();
+		InteractionWidget = nullptr;
+	}
+	
+	if (InteractionPromptWidget)
+	{
+		InteractionPromptWidget->DestroyComponent();
+		InteractionPromptWidget = nullptr;
+	}
+}
+
 void UDraggableComponent::SetInteractionEnabled()
 {
 	if (Enabled)

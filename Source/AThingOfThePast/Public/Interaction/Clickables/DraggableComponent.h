@@ -22,6 +22,7 @@ class ATHINGOFTHEPAST_API UDraggableComponent : public USceneComponent
 public:	
 	
 	UDraggableComponent();
+	~UDraggableComponent();
 	
 #pragma region Interaction
 	
