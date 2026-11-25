@@ -25,24 +25,31 @@ public:
 	
 #pragma region Interaction
 	
+	/** Class used to display the current interaction */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
 	TSubclassOf<UDraggableWidget> InteractionWidgetClass;
 	
+	/** Class used to telegraph the current interaction */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
 	TSubclassOf<UCursorInteractionPromptWidget> InteractionPromptWidgetClass;
 	
+	/** Radius of the interaction sphere */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction")
 	float SphereRadius = 15.0f;
 	
+	/** Offset applied to the telegraphing widget */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
-	FTransform PromptWidgetTransform = FTransform::Identity;;
+	FTransform PromptWidgetTransform = FTransform::Identity;
 	
+	/** Material applied to the telegraphing widget */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Configuration|Interaction|Advanced")
 	UMaterialInterface* InteractionPromptMaterial;
 	
+	/** When the player begins their drag, this is called */
 	UPROPERTY(BlueprintAssignable)
 	FOnDragComponentStarted onDragComponentStarted;
 	
+	/** When the player ends their drag, this is called */
 	UPROPERTY(BlueprintAssignable)
 	FOnDragComponentEnded onDragComponentEnded;
 	
