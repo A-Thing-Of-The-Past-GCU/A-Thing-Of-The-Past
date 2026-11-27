@@ -24,6 +24,9 @@ public:
 	TObjectPtr<UTexture2D> Thumbnail;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UStaticMesh> Mesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UItemDefinition> SlotDefinitionExample;
 	
 	/**The actual type of item that it is e.g. Item.Tool, Item.Key, Item.*/
